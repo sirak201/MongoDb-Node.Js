@@ -1,6 +1,9 @@
+
+
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
+const bookRoute = require('./routes/book')
 
 const options = {
     useNewUrlParser: true,
@@ -15,33 +18,7 @@ const options = {
     family: 4 // Use IPv4, skip trying IPv6
   };
 
-  var bookSchema = new mongoose.Schema({
-    releaseDate: String,
-    bookName: String
-
-  });
-
-  var Book = mongoose.model('Book', bookSchema);
-
-
-
-
-app.get('/api/book' ,  async (req , res) => {
-
-
-  const newBook = new Book({
-    _id: new mongoose.Types.ObjectId(),
-    bookName: 'Harry Potter',
-    releaseDate: Date().now.toString
-  });
-
-
-  const addedook = await newBook.save()
-  res.json(addedook)
-
-})
-
-
+app.use('/api' , bookRoute)
 
 mongoose.connect('mongodb://sirak201:sirak33@ds233288.mlab.com:33288/heroku_2d6v6ns6', options).then(
     () => { console.log("Connection sucesfull") },
