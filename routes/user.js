@@ -1,11 +1,13 @@
 const User = require("../models/User");
 const express = require("express");
 const router = express.Router();
-const { userValidation } = require("../util/validation");
+const { userValidation, loginValidation } = require("../util/validation");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const auth = require("../util/verifyToken");
 
-router.get("/users", async (req, res) => {
+router.get("/users", auth, async (req, res) => {
   const users = await User.find();
   res.json(users);
 });
@@ -19,7 +21,6 @@ router.post("/user", async (req, res) => {
   }
 
   const salt = await bcrypt.genSalt(saltRounds);
-
   const hashPassword = await bcrypt.hash(req.body.password, salt);
 
   const newUser = new User({
@@ -35,6 +36,28 @@ router.post("/user", async (req, res) => {
     res.json(savedUser);
   } catch (err) {
     res.json(err);
+  }
+});
+
+router.post("/login", async (req, res) => {
+  const { error } = loginValidation(req.body);
+
+  if (error) {
+    res.status(400).send(error.details[0].message);
+    return;
+  }
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) return res.status(400).send("Email not found");
+
+    const isPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!isPassword) return res.send("Password does not match our database ");
+
+    const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
+    res.header("auth-token", token);
+    res.send(token);
+  } catch (err) {
+    res.send(err);
   }
 });
 

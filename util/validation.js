@@ -18,4 +18,19 @@ const userValidation = data => {
   return schema.validate(data);
 };
 
+const loginValidation = data => {
+  const schema = Joi.object({
+    password: Joi.string()
+      .required()
+      .min(6)
+      .required(),
+    email: Joi.string()
+      .email()
+      .required()
+  });
+
+  return schema.validate(data);
+};
+
 module.exports.userValidation = userValidation;
+module.exports.loginValidation = loginValidation;
