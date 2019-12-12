@@ -32,5 +32,18 @@ const loginValidation = data => {
   return schema.validate(data);
 };
 
+const podcastValidate = data => {
+  const schema = Joi.object({
+    podcastName: Joi.string()
+      .required()
+      .min(3)
+      .required(),
+    length: Joi.number().required()
+  });
+
+  return schema.validate(data);
+};
+
 module.exports.userValidation = userValidation;
 module.exports.loginValidation = loginValidation;
+module.exports.podcastValidate = podcastValidate;

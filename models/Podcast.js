@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 var podcastSchema = new mongoose.Schema({
   releaseDate: { type: Date, default: Date.now },
-  podcastName: String,
+  podcastName: { type: String, required: true, unique: true },
   owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  length: Schema.Types.Decimal128
+  length: Number
 });
 
 const Podcast = mongoose.model("Podcast", podcastSchema);

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 var userSchema = new mongoose.Schema({
   fullName: {
@@ -24,7 +25,13 @@ var userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true
-  }
+  },
+  podcasts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Podcast"
+    }
+  ]
 });
 
 const User = mongoose.model("User", userSchema);

@@ -16,7 +16,7 @@ router.post("/user", async (req, res) => {
   const { error } = userValidation(req.body);
 
   if (error) {
-    res.status(400).send(error.details[0].message);
+    res.status(400).json({ error: error.details[0].message });
     return;
   }
 
@@ -35,7 +35,7 @@ router.post("/user", async (req, res) => {
     const savedUser = await User.findById(addedUser._id);
     res.json(savedUser);
   } catch (err) {
-    res.json(err);
+    res.json({ error: err });
   }
 });
 
@@ -43,21 +43,23 @@ router.post("/login", async (req, res) => {
   const { error } = loginValidation(req.body);
 
   if (error) {
-    res.status(400).send(error.details[0].message);
+    res.status(400).json({ error: error.details[0].message });
     return;
   }
   try {
     const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(400).send("Email not found");
+    if (!user)
+      return res.status(400).json({ error: "Invalid Emial or Password" });
 
     const isPassword = await bcrypt.compare(req.body.password, user.password);
-    if (!isPassword) return res.send("Password does not match our database ");
+    if (!isPassword)
+      return res.status(400).json({ error: "Invalid Emial or Password" });
 
     const token = jwt.sign({ userId: user._id }, process.env.TOKEN_SECRET);
     res.header("auth-token", token);
     res.send(token);
   } catch (err) {
-    res.send(err);
+    res.json({ error: err });
   }
 });
 
