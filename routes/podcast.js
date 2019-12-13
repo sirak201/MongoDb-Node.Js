@@ -1,15 +1,16 @@
 const Podcast = require("../models/Podcast");
-const mongoose = require("mongoose");
 const express = require("express");
-const router = express.Router();
 const auth = require("../util/verifyToken");
 const { podcastValidate } = require("../util/validation");
+const router = express.Router();
 
+// Get all Podcast
 router.get("/podcast", async (req, res) => {
   const podcasts = await Podcast.find();
   res.json(podcasts);
 });
 
+// Create a Podcast
 router.post("/podcast", auth, async (req, res) => {
   const { error } = podcastValidate(req.body);
 

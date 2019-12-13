@@ -15,17 +15,16 @@ const options = {
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
-  poolSize: 10, // Maintain up to 10 socket connections
-  // If not connected, return errors immediately rather than waiting for reconnect
+  poolSize: 10,
   bufferMaxEntries: 0,
-  connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
-  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-  family: 4 // Use IPv4, skip trying IPv6
+  connectTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
+  family: 4
 };
 
 app.use(bodyParser.json());
-app.use("/api", podcastRoute);
-app.use("/api", userRoute);
+app.use("/api", podcastRoute); // Podcast Routes
+app.use("/api", userRoute); // User Routes
 
 mongoose.connect(process.env.DB_CONNECT, options).then(
   () => {
