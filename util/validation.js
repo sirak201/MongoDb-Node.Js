@@ -38,7 +38,9 @@ const podcastValidate = data => {
       .required()
       .min(3)
       .required(),
-    length: Joi.number().required()
+    length: Joi.number().required(),
+    imageUrl: Joi.string(),
+    type: Joi.string().required()
   });
 
   return schema.validate(data);
